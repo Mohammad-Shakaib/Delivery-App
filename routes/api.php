@@ -1,8 +1,9 @@
 <?php
 
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Api\AuthController;
+use App\Http\Controllers\Api\ParcelController;
+
 /*
 |--------------------------------------------------------------------------
 | API Routes
@@ -16,18 +17,20 @@ use App\Http\Controllers\Api\AuthController;
 
 // Define a route group with a prefix, middleware, and namespace
 Route::group([], function () {
-    Route::post('/login', [AuthController::class, 'login']);
+    Route::post('/login', [AuthController::class, 'login'])->name('api.login');
 
-    Route::middleware(['jwt.verify', 'sender.verify'])->group(function () {
-        Route::post('/createParcel', [AuthController::class, 'createParcel']);
-        Route::get('/sender/parcels', [AuthController::class, 'getSenderParcels']);
-    });
+    Route::middleware(['jwt.verify'])->group(function () {
+        Route::middleware(['sender.verify'])->group(function () {
+            Route::post('/createParcel', [ParcelController::class, 'createParcel'])->name('api.create.parcel');
+            Route::get('/sender/parcels', [ParcelController::class, 'getSenderParcels'])->name('api.sender.parcels');
+        });
 
-    Route::middleware(['jwt.verify', 'biker.verify'])->group(function () {
-        Route::get('/all/parcels', [AuthController::class, 'getParcels']);
-        Route::put('/parcel/picked', [AuthController::class, 'pickParcel']);
-        Route::put('/parcel/delivered', [AuthController::class, 'parcelDelivered']);
+        Route::middleware(['biker.verify'])->group(function () {
+            Route::get('/biker/parcels', [ParcelController::class, 'getBikerParcels'])->name('api.biker.parcels');
+            Route::put('/parcel/picked', [ParcelController::class, 'parcelPicked'])->name('api.parcel.picked');
+            Route::put('/parcel/delivered', [ParcelController::class, 'parcelDelivered'])->name('api.parcel.delivered');
+        });
+
+        Route::post('/logout', [AuthController::class, 'logout'])->name('api.logout');
     });
 });
-
-

@@ -12,6 +12,18 @@ window.axios = axios;
 
 window.axios.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest';
 
+const constants = {
+    headers: {
+        "Content-Type": "application/json",
+        Accept: "application/json",
+    },
+};
+console.log("token", localStorage.getItem("token"));
+window.axios.defaults.headers = constants.headers;
+window.axios.interceptors.request.use((config) => {
+    config.headers.authorization = "ASAS";
+    return config;
+});
 /**
  * Echo exposes an expressive API for subscribing to channels and listening
  * for events that are broadcast by Laravel. Echo and event broadcasting

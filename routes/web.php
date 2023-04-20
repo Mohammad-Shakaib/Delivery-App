@@ -1,7 +1,7 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
-
+use App\Http\Controllers\HomeController;
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -13,6 +13,9 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-// Route::get('/', function () {
-//     return view('welcome');
-// });
+
+
+Route::group([], function () {
+    Route::get('/', [HomeController::class, 'index'])->name('web.login');
+    Route::get('/homepage', [HomeController::class, 'homePage'])->name('web.homepage');
+});
